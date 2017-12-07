@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/top_gui_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+
+    <edu.up.cs301.animation.AnimationSurface
+        android:id="@+id/animation_surface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/space" />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/space" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    </LinearLayout>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme" />
+
+    <ImageButton
+        android:id="@+id/infoBtn"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="13dp"
+        android:layout_toEndOf="@+id/space"
+        android:onClick="showInfo"
+        android:src="@android:drawable/ic_dialog_info" />
+
+    <TextView
+        android:id="@+id/HumanScore"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_alignTop="@+id/infoBtn"
+        android:layout_marginStart="14dp"
+        android:layout_toEndOf="@+id/infoBtn"
+        android:text="Your score: "
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/AI1Score"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_alignBaseline="@+id/HumanScore"
+        android:layout_alignBottom="@+id/HumanScore"
+        android:layout_toEndOf="@+id/HumanScore"
+        android:text="AI 1 score: "
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/AI2Score"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_alignBaseline="@+id/AI1Score"
+        android:layout_alignBottom="@+id/AI1Score"
+        android:layout_toStartOf="@+id/AI3Score"
+        android:text="AI 2 score: "
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/AI3Score"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_alignBaseline="@+id/AI2Score"
+        android:layout_alignBottom="@+id/AI2Score"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="74dp"
+        android:text="AI 3 score: "
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+</RelativeLayout>
