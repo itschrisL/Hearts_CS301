@@ -78,7 +78,9 @@ public class HeartsGameState extends GameState {
         //Todo fix
         CurrentPlayerIndex = hasTwoOfClubs();
 
-
+        for(int i=0; i<cardPlayedBool.length;i++){
+            cardPlayedBool[i] = false;
+        }
 
         //Todo maybe not proper coding but.
         cardsOnTable = new Card[4];

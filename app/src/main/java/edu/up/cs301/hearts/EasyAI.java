@@ -81,18 +81,19 @@ public class EasyAI extends GameComputerPlayer {
             // going, there is no need to explicitly display anything. That will happen
             // at the next animation-tick, which should occur within 1/20 of a second
             this.state = (HeartsGameState)info;
+            ind = super.playerNum;
+
+            if(ind == state.CurrentPlayerIndex){
+                currentHand = state.piles[ind];
+                playCard(currentHand);
+            }
             Log.i("computer player", "receiving");
         }
 
         // ignore if we have not yet received the game state
         if (state == null) return;
 
-        ind = super.playerNum;
 
-        if(ind == state.CurrentPlayerIndex){
-            currentHand = state.piles[ind];
-            playCard(currentHand);
-        }
     }
 
     public void strategy() {
@@ -117,13 +118,15 @@ public class EasyAI extends GameComputerPlayer {
     }
 
     public void playCard(CardDeck aisHand) {
+        Card twoClubs= new Card(Rank.TWO, Suit.Club);
+        if(currentHand.containsCard(twoClubs)){
+            chosenCard= twoClubs;
+        }
         while (chosenCard == null ||  currentHand.containsCard(chosenCard) == false) {
             strategy();
         }
         sleep(1000);
         game.sendAction(new HeartsPlayCardAction(this, chosenCard));
-        //TODO want to make sure it's a legal move, so this remove method belongs in localGame
-        aisHand.remove(chosenCard);
     }
 
     public void CardPass(){

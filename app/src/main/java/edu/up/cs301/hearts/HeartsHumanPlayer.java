@@ -430,8 +430,8 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
         if (doubleTap==true){
             //draw selected card in played human spot
-            /*
-            game.sendAction(new HeartsMoveAction(this));
+/*
+            //game.sendAction(new HeartsMoveAction(this));
             drawCard(g, HcardPile, selectedCard);
             p = new Paint();
             p.setColor(Color.YELLOW);
@@ -444,9 +444,10 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
             drawMe = true;
             humanCards[count] = null;
-
-            state.cardsPlayed[0] = selectedCard;
             */
+
+            //state.cardsOnTable[0] = selectedCard;
+
         }
 
         //idk what it does but it crashes without
@@ -458,15 +459,15 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
         }
 
         // draws a green square over the played cards
-        /*
-        for(int i=0; i<Math.min(13,myDeck.size());i++) {
+
+        for(int i=0; i<Math.min(13,state.piles[index].size());i++) {
             if (cardLocationBool[i] == true) {
                 p = new Paint();
                 p.setColor(Color.GREEN);
                 g.drawRect(yellowCardLocation[i], p);
             }
         }
-        */
+
         updateText();
     }
 
@@ -603,6 +604,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
         // the player's pile or the middle pile
         RectF myTopCardLoc = thisPlayerTopCardLocation();
         RectF middleTopCardLoc = middlePileTopCardLocation();
+
         if(cardLocation != null){
             for (int n=0; n<=13; n++) {
                 if (cardLocation[n].contains(x, y)) {
@@ -619,7 +621,6 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
                         game.sendAction(new HeartsPlayCardAction(this, selectedCard));
 
                     } else {
-
                         singleTap = true;
                         selectedCard = humanCards[n];
                         doubleTap = false;
@@ -704,11 +705,4 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
         return new RectF(left, top, right, bottom);
     }
 
-    /*
-    public void setNames(){
-        for(int i =0; i<4;i++){
-            playerNames[i]=super.allPlayerNames[i];
-        }
-    }
-    */
 }

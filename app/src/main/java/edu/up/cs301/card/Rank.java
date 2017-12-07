@@ -85,7 +85,6 @@ public enum Rank implements Serializable {
 		}
 	},
 
-	//TODO I'M ADDING SHIT HERE
 	// ten
 	TEN {
 		@Override

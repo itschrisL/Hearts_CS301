@@ -16,6 +16,7 @@ import edu.up.cs301.game.actionMsg.GameAction;
 
 public class HeartsLocalGame extends LocalGame {
     HeartsGameState currentGame;
+    public boolean startOfTrick;
     private final static int WIN_TARGET = 100;
 
     /**
@@ -36,10 +37,14 @@ public class HeartsLocalGame extends LocalGame {
      * @return true if right suit
      */
     public Boolean validSuit(Card card, int playerIndex) {
+        if(startOfTrick){
+            currentGame.baseSuit=card.getSuit();
+            return true;
+        }
         //check if player has a card of the same suit as baseSuit
         boolean hasSuit=false;
         for(Card c: currentGame.piles[playerIndex].cards){
-            if(card.getSuit().equals(currentGame.baseSuit)){
+            if(c.getSuit().equals(currentGame.baseSuit)){
                 hasSuit = true;
             }
         }
@@ -62,6 +67,15 @@ public class HeartsLocalGame extends LocalGame {
      * validCard method checks if the card played by currentPlayer is legal
      */
     public boolean validCard(Card card, int index) {
+        //player must play two of clubs if they have it, and it must be the first card played each round
+        Card twoClubs = new Card(Rank.TWO, Suit.Club);
+        for(int i=0; i<currentGame.piles.length;i++){
+            if(currentGame.piles[i].containsCard(twoClubs) && !card.equals(twoClubs)){
+                return false;
+            }
+        }
+
+
         boolean valid = false;
 
         // check if valid suit
@@ -74,7 +88,9 @@ public class HeartsLocalGame extends LocalGame {
         }
         //Add valid card to the table if no other card has been played already by that player for this trick
         if(currentGame.cardsOnTable[index] == null){
-            currentGame.cardsOnTable[index] = card;}
+            currentGame.cardsOnTable[index] = card;
+            currentGame.piles[index].remove(card);
+            currentGame.turn++;}
 
         //check if it's the end of a trick
         int count =0;
@@ -89,11 +105,20 @@ public class HeartsLocalGame extends LocalGame {
             //should set currentPlayer to the collector of cards of the trick
             updateScore();
             clearTable();
+            //now it's the beginning of a new trick so let baseCard be set in ValidCard()
+            //with respect to the first card played in that trick;
+            startOfTrick = true;
+        }
+        //if baseSuit is already set for that trick
+        if(count==1){
+            //baseSuit is already defined
+            startOfTrick=false;
         }
         //rotate turns in clockwise order
         else{
             currentGame.NextTurn();
         }
+
 
         //if it's a humanPlayer, update the GUI by changing the doubleTap and singlTap variables.
         GamePlayer p = players[currentGame.CurrentPlayerIndex];
@@ -102,6 +127,7 @@ public class HeartsLocalGame extends LocalGame {
             HeartsHumanPlayer hp = (HeartsHumanPlayer) p;
             hp.doubleTap = true;
             hp.singleTap = false;
+            players[index] = hp;
         }
         //TODO might have to do something similar for AI players
 
@@ -231,7 +257,7 @@ public class HeartsLocalGame extends LocalGame {
 
     public void setNewRound() {
         currentGame.deal();
-        //currentGame.hasTwoOfClubs();
+        currentGame.hasTwoOfClubs();
         clearTable();
         currentGame.round++;
     }
@@ -242,15 +268,22 @@ public class HeartsLocalGame extends LocalGame {
             return;
         }
 
-        if (currentGame.turn == 0) {
-            currentGame.baseSuit = card.getSuit();
-        }
 
-        if (!(currentGame.cardPlayedBool[playerIndex])) {
-            currentGame.cardsOnTable[playerIndex] = card;
-            //TODO remove that card from player's deck
-            currentGame.turn++;
-        }
+//        if (currentGame.turn == 0) {
+//            currentGame.baseSuit = card.getSuit();
+//        }
+        currentGame.cardsOnTable[playerIndex] = card;
+        //TODO remove that card from player's deck
+        currentGame.piles[playerIndex].remove(card);
+        currentGame.turn++;
+//        if (!(currentGame.cardPlayedBool[playerIndex]))
+//        {
+//            currentGame.cardsOnTable[playerIndex] = card;
+//            //TODO remove that card from player's deck
+//            currentGame.turn++;
+
+
+//        }
     }
 
     public void clearTable() {
@@ -368,6 +401,7 @@ public class HeartsLocalGame extends LocalGame {
                 //check valid card
                 if (validCard(playCardAction.getCard(), thisPlayerIdx)) {
                     // play that valid card
+                    /*
                     currentGame.addCardToTable(playCardAction.getCard(), thisPlayerIdx);
                     //TODO nextTurn() doesn't work. We change currentPlayer index in local game
                     //currentGame.NextTurn();
@@ -376,6 +410,7 @@ public class HeartsLocalGame extends LocalGame {
                         updateScore();
                         clearTable();
                     }
+                    */
                 } else {
                     return false;
                 }
