@@ -46,6 +46,7 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
 	private boolean gameOver; // whether the game is over
 	public HeartsGameState HeartsGS;
 
+
 	/**
 	 * constructor
 	 * 
@@ -153,7 +154,7 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
 		// set up a timer event to set the background color back to
 		// the original.
 		myHandler.postDelayed(new Unflasher(savedColor), duration);
-	}
+	} //Todo take out only use in HHP
 	
 	/**
 	 * helper-class to finish a "flash.
@@ -218,7 +219,6 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
 	 * 		the message
 	 */
 	public abstract void receiveInfo(GameInfo info);
-
 	
 	/**
 	 * Helper-class that runs the on the GUI's main thread when

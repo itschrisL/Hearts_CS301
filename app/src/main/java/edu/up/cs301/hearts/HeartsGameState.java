@@ -32,8 +32,8 @@ public class HeartsGameState extends GameState {
      * @param d
      * @param user
      */
-    public GamePlayer[] heartsPlayers = new GamePlayer[4];
-    public Card[] cardsOnTable=new Card[4];
+    public GamePlayer[] heartsPlayers;
+    public Card[] cardsOnTable;
     public Suit baseSuit;
     public int firstCardIndex;
     //TODO maybe take this out? See if it's taken care of in localGame
@@ -44,6 +44,7 @@ public class HeartsGameState extends GameState {
     public int turn;
     public int round;
     public GamePlayer CurrentPlayer;
+    //TODO dont use, extra step, just reference CurrentPlayer.
     public int CurrentPlayerIndex;
 
     public Suit suit;
@@ -72,9 +73,18 @@ public class HeartsGameState extends GameState {
      * game, with a random player as the first to turn card
      */
     public HeartsGameState() {
+        super();
+        // Initialize variables
         deal();
-        CurrentPlayerIndex= hasTwoOfClubs();
+        //Todo fix
+        // CurrentPlayerIndex = hasTwoOfClubs();
 
+        //Todo maybe not proper coding but.
+        cardsOnTable = new Card[4];
+        int i;
+        for(i = 0; i < cardsOnTable.length;i++){
+
+        }
 
         //initialize CurrentPlayerIndex
         // starting player
@@ -280,14 +290,14 @@ public class HeartsGameState extends GameState {
             piles[counter].add(defaultDeck.get(i));
             if((i+1)%13==0&&counter!=3){counter++;}
         }
-
-        CurrentPlayerIndex = hasTwoOfClubs();
     }
 
+    // TODO move to LG initialize in LG
     /**
+    /
      * Returns the id of the player with the two of clubs
      * @return
-     */
+
     public int hasTwoOfClubs(){
         Card twoClubs = new Card(Rank.TWO, Suit.Club);
         for(int i = 0; i<heartsPlayers.length;i++){
@@ -299,7 +309,9 @@ public class HeartsGameState extends GameState {
         }
         return -1;
     }
+    **/
 
+    // TODO ?
     /**
      * scales a rectangle, moving all edges with respect to its center
      *

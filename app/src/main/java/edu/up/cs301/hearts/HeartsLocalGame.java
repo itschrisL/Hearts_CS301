@@ -23,9 +23,9 @@ public class HeartsLocalGame extends LocalGame {
      */
     public HeartsLocalGame() {
         super();
+
         // create the state for the beginning of the game
         currentGame = new HeartsGameState();
-        currentGame.heartsPlayers = this.players;
            //currentGame.setPlayers(players);
 
 
@@ -56,13 +56,6 @@ public class HeartsLocalGame extends LocalGame {
             return false;
         }
     }
-
-    /**
-     * @param card
-     * @return
-     */
-    public boolean cardInCurrentPlayerHand(Card card) {
-        return currentGame.piles[currentGame.getCurrentPlayerIndex()].containsCard(card);}
 
 
     /**
@@ -101,20 +94,30 @@ public class HeartsLocalGame extends LocalGame {
         else{
             currentGame.NextTurn();
         }
+
         //if it's a humanPlayer, update the GUI by changing the doubleTap and singlTap variables.
-        GamePlayer p = currentGame.heartsPlayers[index];
+        GamePlayer p = currentGame.CurrentPlayer;
+
         if(p instanceof HeartsHumanPlayer){
             HeartsHumanPlayer hp = (HeartsHumanPlayer) p;
             hp.doubleTap = true;
             hp.singleTap = false;
-            // TODO hp.cardLocationBool[n] = true;
-            currentGame.heartsPlayers[index] = hp;
         }
         //TODO might have to do something similar for AI players
 
         //it's a valid card so return true
         return true;
     }
+
+    /**
+     * @param card
+     * @return
+     */
+    public boolean cardInCurrentPlayerHand(Card card) {
+        return currentGame.piles[currentGame.getCurrentPlayerIndex()].containsCard(card);}
+
+
+
 
     /**
      * @param player
@@ -231,7 +234,7 @@ public class HeartsLocalGame extends LocalGame {
 
     public void setNewRound() {
         currentGame.deal();
-        currentGame.hasTwoOfClubs();
+        //currentGame.hasTwoOfClubs();
         clearTable();
         currentGame.round++;
     }
