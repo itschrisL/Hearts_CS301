@@ -96,7 +96,7 @@ public class HeartsLocalGame extends LocalGame {
         }
 
         //if it's a humanPlayer, update the GUI by changing the doubleTap and singlTap variables.
-        GamePlayer p = currentGame.CurrentPlayer;
+        GamePlayer p = players[currentGame.CurrentPlayerIndex];
 
         if(p instanceof HeartsHumanPlayer){
             HeartsHumanPlayer hp = (HeartsHumanPlayer) p;
@@ -116,15 +116,12 @@ public class HeartsLocalGame extends LocalGame {
     public boolean cardInCurrentPlayerHand(Card card) {
         return currentGame.piles[currentGame.getCurrentPlayerIndex()].containsCard(card);}
 
-
-
-
     /**
      * @param player
      * @return
      */
     public boolean playersTurn(GamePlayer player) {
-        if (currentGame.CurrentPlayer.equals(player)) {
+        if (players[currentGame.CurrentPlayerIndex].equals(player)) {
             return true;
         } else {
             return false;
@@ -194,7 +191,7 @@ public class HeartsLocalGame extends LocalGame {
         int j;
         // Pass to left
         if (currentGame.round % 4 == 0) {
-            for (i = 0; i < currentGame.heartsPlayers.length; i++) {
+            for (i = 0; i < players.length; i++) {
                 // removes from hand
                 for (j = 0; j < cards[i].cards.size(); j++) {
                     currentGame.piles[i].remove(cards[i].get(j));
@@ -210,7 +207,7 @@ public class HeartsLocalGame extends LocalGame {
                 }
             }
         } else if (currentGame.round % 4 == 1) { // Pass Across
-            for (i = 0; i < currentGame.heartsPlayers.length; i++) {
+            for (i = 0; i < players.length; i++) {
                 // removes from hand
                 for (j = 0; j < cards[i].cards.size(); j++) {
                     currentGame.piles[i].remove(cards[i].get(j));
@@ -389,7 +386,7 @@ public class HeartsLocalGame extends LocalGame {
         }
 
         // return true, because the move was successful if we get here
-        sendUpdatedStateTo(currentGame.heartsPlayers[thisPlayerIdx]);
+        sendUpdatedStateTo(players[thisPlayerIdx]);
         return true;
 
     }

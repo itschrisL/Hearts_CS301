@@ -26,6 +26,7 @@ public class HeartsPlayCardAction extends HeartsMoveAction {
      * @return
      *        whether this action is a "play card" move
      */
+    @Override
     public boolean isPlayCard() {
         return true;
     }

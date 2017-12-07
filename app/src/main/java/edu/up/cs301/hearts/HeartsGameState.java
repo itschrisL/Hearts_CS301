@@ -32,7 +32,7 @@ public class HeartsGameState extends GameState {
      * @param d
      * @param user
      */
-    public GamePlayer[] heartsPlayers;
+    //public GamePlayer[] heartsPlayers;
     public Card[] cardsOnTable;
     public Suit baseSuit;
     public int firstCardIndex;
@@ -43,7 +43,6 @@ public class HeartsGameState extends GameState {
     public Boolean[] cardPlayedBool = new Boolean[4];
     public int turn;
     public int round;
-    public GamePlayer CurrentPlayer;
     //TODO dont use, extra step, just reference CurrentPlayer.
     public int CurrentPlayerIndex;
 
@@ -77,7 +76,9 @@ public class HeartsGameState extends GameState {
         // Initialize variables
         deal();
         //Todo fix
-        // CurrentPlayerIndex = hasTwoOfClubs();
+        CurrentPlayerIndex = hasTwoOfClubs();
+
+
 
         //Todo maybe not proper coding but.
         cardsOnTable = new Card[4];
@@ -116,16 +117,9 @@ public class HeartsGameState extends GameState {
         turn= orig.turn;
         round= orig.round;
 
-        CurrentPlayer = orig.CurrentPlayer;
+
         CurrentPlayerIndex = orig.CurrentPlayerIndex;
 
-    }
-
-    //TODO this gives us nullPointerException when we call it in constructor of LocalGame so we commented it out. Not sure if this method needs fixing.
-    public void setPlayers(GamePlayer[] players){
-        for(int i =0; i<heartsPlayers.length;i++){
-            heartsPlayers[i] = players[i];
-        }
     }
 
     /**
@@ -150,7 +144,6 @@ public class HeartsGameState extends GameState {
      */
     public void setCurrentPlayer(int index){
         if((index >= 0)&&(index <= 3)){
-            CurrentPlayer = heartsPlayers[index];
             CurrentPlayerIndex = index;
         }
     }
@@ -206,16 +199,6 @@ public class HeartsGameState extends GameState {
         return piles[num];
     }
 
-    public int getPlayerIndex(GamePlayer p){
-        int returnVal = 0;
-        for(int i =0; i<heartsPlayers.length; i++){
-            if(heartsPlayers[i].equals(p)){
-                returnVal= i;
-            }
-        }
-        return returnVal;
-    }
-
     /**
      * Tells which player's turn it is.
      *09
@@ -247,12 +230,10 @@ public class HeartsGameState extends GameState {
     public void NextTurn(){
         //current player now is being updated in local game
         if(CurrentPlayerIndex == 3){
-            CurrentPlayer = heartsPlayers[0];
             CurrentPlayerIndex = 0;
         }
         else {
             CurrentPlayerIndex++;
-            CurrentPlayer = heartsPlayers[CurrentPlayerIndex];
         }
 
         //check if it's time to update the base suit for a new trick
@@ -293,15 +274,14 @@ public class HeartsGameState extends GameState {
     }
 
     // TODO move to LG initialize in LG
-    /**
-    /
+    /*
      * Returns the id of the player with the two of clubs
      * @return
-
+*/
     public int hasTwoOfClubs(){
         Card twoClubs = new Card(Rank.TWO, Suit.Club);
-        for(int i = 0; i<heartsPlayers.length;i++){
-
+        baseSuit=Suit.Club;
+        for(int i = 0; i<piles.length;i++){
             if(piles[i].containsCard(twoClubs)) {
                 return i;
             }
@@ -309,7 +289,7 @@ public class HeartsGameState extends GameState {
         }
         return -1;
     }
-    **/
+
 
     // TODO ?
     /**
