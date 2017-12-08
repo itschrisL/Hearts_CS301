@@ -1,5 +1,7 @@
 package edu.up.cs301.hearts;
 
+import android.util.Log;
+
 import edu.up.cs301.card.Card;
 import edu.up.cs301.card.Rank;
 import edu.up.cs301.card.Suit;
@@ -18,6 +20,7 @@ public class HeartsLocalGame extends LocalGame {
     HeartsGameState currentGame;
     public boolean startOfTrick;
     private final static int WIN_TARGET = 100;
+    //HeartsGameState HGS;
 
     /**
      * Constructor for the HeartsLocalGame.
@@ -27,7 +30,7 @@ public class HeartsLocalGame extends LocalGame {
 
         // create the state for the beginning of the game
         currentGame = new HeartsGameState();
-           //currentGame.setPlayers(players);
+        //currentGame.setPlayers(players);
 
 
     }
@@ -74,9 +77,6 @@ public class HeartsLocalGame extends LocalGame {
                 return false;
             }
         }
-
-
-        boolean valid = false;
 
         // check if valid suit
         if (!(validSuit(card, index))) {
@@ -161,7 +161,7 @@ public class HeartsLocalGame extends LocalGame {
     public int winTrick() {
         //find suit of first card played
         int winnerIndex=0;
-        int highestFace = currentGame.cardsOnTable[currentGame.firstCardIndex].getRankIndex();
+        int highestFace = currentGame.cardsOnTable[0].getRankIndex();
 
 
         //find highest card of suit played
@@ -340,7 +340,7 @@ public class HeartsLocalGame extends LocalGame {
         //check if it's a tie
         for (int i = 0; i < currentGame.Scores.length; i++) {
             if (currentGame.Scores[i] == lowestScore) {
-               // tie = tie.concat("" + currentGame.names[i] + ", ");
+                // tie = tie.concat("" + currentGame.names[i] + ", ");
 
             }
         }
@@ -352,7 +352,7 @@ public class HeartsLocalGame extends LocalGame {
             return "Game over. " + tie + " is the winner!!";
         }
 
-        return "game is still going";
+        return null;
     }
 
     protected boolean makeMove(GameAction action) {
@@ -392,6 +392,8 @@ public class HeartsLocalGame extends LocalGame {
         //TODO make sure players have to pass before they can play a card
 
         else if (h_move_action.isPlayCard()) { // we have a "play card " action
+            Log.i("FOUND", " PLAYCARD ACTION");
+
             HeartsPlayCardAction playCardAction = (HeartsPlayCardAction) h_move_action;
 
             if (!canMove(thisPlayerIdx)) {
@@ -400,6 +402,7 @@ public class HeartsLocalGame extends LocalGame {
             } else {
                 //check valid card
                 if (validCard(playCardAction.getCard(), thisPlayerIdx)) {
+                    currentGame.cardsOnTable[thisPlayerIdx]=playCardAction.getCard();
                     // play that valid card
                     /*
                     currentGame.addCardToTable(playCardAction.getCard(), thisPlayerIdx);
@@ -421,7 +424,9 @@ public class HeartsLocalGame extends LocalGame {
         }
 
         // return true, because the move was successful if we get here
-        sendUpdatedStateTo(players[thisPlayerIdx]);
+        //sendUpdatedStateTo(players[thisPlayerIdx]);
+        Log.i("LEGAL MOVE", " returning true");
+
         return true;
 
     }

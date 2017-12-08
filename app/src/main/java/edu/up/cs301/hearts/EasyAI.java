@@ -66,12 +66,14 @@ public class EasyAI extends GameComputerPlayer {
     }
 
     public void receiveInfo(GameInfo info) {
-        if (info instanceof IllegalMoveInfo) {
-            playCard(currentHand);
+
+
+        if (info instanceof IllegalMoveInfo || info instanceof NotYourTurnInfo) {
+            Log.i("computer player", "made illegal move");
+
+            return;
         }
-        else if(info instanceof NotYourTurnInfo){
-            //TODO might have to add something
-        }
+
         else if (!(info instanceof HeartsGameState)) {
             // otherwise, if it's not a game-state message, ignore
             return;
@@ -82,46 +84,40 @@ public class EasyAI extends GameComputerPlayer {
             // at the next animation-tick, which should occur within 1/20 of a second
             this.state = (HeartsGameState)info;
             ind = super.playerNum;
+            currentHand = state.piles[ind];
 
             if(ind == state.CurrentPlayerIndex){
-                currentHand = state.piles[ind];
-                playCard(currentHand);
+                strategy();
+                Log.i(ind + " SEND PLAYCARDACTION  ", "currentplayer is" +state.CurrentPlayerIndex + ". I played "+chosenCard+"");
+                game.sendAction(new HeartsPlayCardAction(this, chosenCard));
+                //playCard(currentHand);
             }
             Log.i("computer player", "receiving");
         }
-
-        // ignore if we have not yet received the game state
-        if (state == null) return;
 
 
     }
 
     public void strategy() {
-        //pick a card at random from EasyAI's card deck
-        //Remember, there are three different AI's, so there are three different decks to keep track of
-        Random rand = new Random();
-        //x is rank, y is suit
-        int x = rand.nextInt(13);
-        int y = rand.nextInt(4);
-
-        if(state.baseSuit==null){
-            chosenCard = new Card(ranks[x],suits[y]);
-        }//our card will be first
-
-        //check and see if the AI player has a card of the suit that was originally played. If not, play any card
-        else if(checkIfSuitInHand(state.baseSuit)==true){
-            chosenCard = new Card(ranks[x], state.baseSuit);
-        }
-        else{
-            chosenCard = new Card(ranks[x],suits[y]);
-        }
-    }
-
-    public void playCard(CardDeck aisHand) {
         Card twoClubs= new Card(Rank.TWO, Suit.Club);
         if(currentHand.containsCard(twoClubs)){
             chosenCard= twoClubs;
         }
+        else {
+            //pick a card at random from EasyAI's card deck
+            for (Card c : currentHand.cards) {
+                Log.i("strategy",""+super.playerNum+"["+state.CurrentPlayerIndex+"] "+c);
+                if (c.getSuit().equals(state.baseSuit)) {
+                    chosenCard = c;
+                    break;
+                }
+            }
+        }
+
+    }
+
+    public void playCard(CardDeck aisHand) {
+
         while (chosenCard == null ||  currentHand.containsCard(chosenCard) == false) {
             strategy();
         }

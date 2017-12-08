@@ -109,6 +109,8 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
     public void receiveInfo(GameInfo info) {
         Log.i("HeartsHumanPlayer", "receiving updated state ("+info.getClass()+")");
         if (info instanceof IllegalMoveInfo || info instanceof NotYourTurnInfo) {
+            Log.i("human player", "made illegal move");
+
             // if we had an out-of-turn or illegal move, flash the screen
             surface.flash(Color.RED, 50);
         }
@@ -216,6 +218,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
         if (doubleTapCard1==true){
             //draw selected card in played human spot
+
             game.sendAction(new HeartsMoveAction(this));
             //drawCard(g, HcardPile, selectedCard);
 
@@ -403,20 +406,20 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
         RectF aI1cardPile = new RectF(AI1rectLeft, AI1rectTop, AI1rectRight, AI1rectBottom);
         drawCard(g, aI1cardPile, state.cardsOnTable[1]);
 
-        // draw the  second AI's played card
-        float AI2rectLeft = 1050;
-        float AI2rectRight = 1200;
-        float AI2rectTop = 300;
-        float AI2rectBottom = 500;
+        float AI2rectLeft = 650;
+        float AI2rectRight = 800;
+        float AI2rectTop = 100;
+        float AI2rectBottom = 300;
 
         RectF aI2cardPile = new RectF(AI2rectLeft, AI2rectTop, AI2rectRight, AI2rectBottom);
         drawCard(g, aI2cardPile, state.cardsOnTable[2]);
 
         // draw the third AI's played card
-        float AI3rectLeft = 650;
-        float AI3rectRight = 800;
-        float AI3rectTop = 100;
-        float AI3rectBottom = 300;
+
+        float AI3rectLeft = 1050;
+        float AI3rectRight = 1200;
+        float AI3rectTop = 300;
+        float AI3rectBottom = 500;
 
         RectF aI3cardPile = new RectF(AI3rectLeft, AI3rectTop, AI3rectRight, AI3rectBottom);
         drawCard(g, aI3cardPile, state.cardsOnTable[3]);
@@ -618,6 +621,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
                         doubleTap = false;
                     } else if (cardToPlay == selectedCard) {
                         // call action
+                        Log.i(index+ " SEND PLAYCARDACTION ",  "currentplayer is" +state.CurrentPlayerIndex + ". I played "+cardToPlay+ "");
                         game.sendAction(new HeartsPlayCardAction(this, selectedCard));
 
                     } else {
