@@ -1,12 +1,8 @@
 package edu.up.cs301.hearts;
 
-
-import android.graphics.RectF;
-
 import edu.up.cs301.card.Card;
 import edu.up.cs301.card.Rank;
 import edu.up.cs301.card.Suit;
-import edu.up.cs301.game.GamePlayer;
 import edu.up.cs301.game.infoMsg.GameState;
 
 
@@ -26,33 +22,20 @@ public class HeartsGameState extends GameState {
 
     private static final long serialVersionUID = -8269749892027578792L;
 
-    /*
-    /**
-     * HeartsGameState Constructor
-     * @param d
-     * @param user
-     */
-    //public GamePlayer[] heartsPlayers;
-    public Card[] cardsOnTable;
+    public Card[] cardsOnTable = new Card[4];
     public Suit baseSuit;
     public int firstCardIndex;
-    //TODO maybe take this out? See if it's taken care of in localGame
-    public boolean GameOver = false;
+
 
     // variables that keep track table
     public Boolean[] cardPlayedBool = new Boolean[4];
     public int turn;
     public int round;
-    //TODO dont use, extra step, just reference CurrentPlayer.
     public int CurrentPlayerIndex;
-
     public Suit suit;
 
-
-    // Chosen difficulty
-    //  - 0: EasyAIxxx
-    //  - 1: HardAI
-    protected int Difficulty;
+    public int[] Scores = new int[4];
+    public int Trick = 0;
 
     // the three piles of cards:
     //  - 0: pile for player 0
@@ -61,11 +44,6 @@ public class HeartsGameState extends GameState {
     //  - 3: pile for player 3
     public CardDeck[] piles;
 
-    //TODO create scoring method and keep track/update trick
-    public int[] Scores = new int[4];
-    public int Trick = 0;
-
-
     /**
      *
      * Constructor for objects of class HeartsGameState. Initializes for the beginning of the
@@ -73,24 +51,16 @@ public class HeartsGameState extends GameState {
      */
     public HeartsGameState() {
         super();
-        // Initialize variables
+        //shuffles and deals cards to each card pile
         deal();
-        //Todo fix
+
+        //set the current player to have be the one with Two of Clubs
         CurrentPlayerIndex = hasTwoOfClubs();
 
+        //set all player's booleans to false since none have played yet
         for(int i=0; i<cardPlayedBool.length;i++){
             cardPlayedBool[i] = false;
         }
-
-        //Todo maybe not proper coding but.
-        cardsOnTable = new Card[4];
-        int i;
-        for(i = 0; i < cardsOnTable.length;i++){
-
-        }
-
-        //initialize CurrentPlayerIndex
-        // starting player
     }
 
     /**
@@ -98,64 +68,17 @@ public class HeartsGameState extends GameState {
      *
      * @param orig the state to be copied
      */
-    public HeartsGameState(HeartsGameState orig) {
-        // set index of player whose turn it is
+    public HeartsGameState(HeartsGameState orig) {//copy constructor
         CurrentPlayerIndex = orig.CurrentPlayerIndex;
         baseSuit = orig.baseSuit;
         firstCardIndex = orig.firstCardIndex;
-        GameOver = orig.GameOver;
-
-        piles = new CardDeck[4];
-        cardPlayedBool = new Boolean[4];
-        cardsOnTable = new Card[4];
-
-        // variables that keep track table
-        for(int i=0; i<4;i++) {
-            piles[i] = orig.piles[i];
-            cardPlayedBool[i] = orig.cardPlayedBool[i];
-            cardsOnTable[i] = orig.cardsOnTable[i];
-        }
+        piles = orig.piles;
+        cardPlayedBool = orig.cardPlayedBool;
+        cardsOnTable = orig.cardsOnTable;
         suit= orig.suit;
         turn= orig.turn;
         round= orig.round;
-
-
         CurrentPlayerIndex = orig.CurrentPlayerIndex;
-
-    }
-
-    /**
-     * Set AI difficulty
-     * @param difficulty
-     *  - 0 : EasyAIxxx
-     *  - 1 : HardAI
-     */
-    public void setDifficulty(int difficulty){
-        //TODO fix main menu so that it asks user to select difficulty level
-        if((difficulty == 0)||(difficulty == 1)){
-            this.Difficulty = difficulty;
-        }
-        else{
-            return;
-        }
-    }
-
-    /**
-     * Set Current Player
-     * @param index
-     */
-    public void setCurrentPlayer(int index){
-        if((index >= 0)&&(index <= 3)){
-            CurrentPlayerIndex = index;
-        }
-    }
-
-    /**
-     * Set Game Over
-     * @param b
-     */
-    public void setGameOver(boolean b){
-        GameOver = b;
     }
 
     /**
@@ -165,8 +88,6 @@ public class HeartsGameState extends GameState {
         Trick = trick;
     }
 
-    public int getDifficulty(){return Difficulty;}
-
     /**
      *
      * @return
@@ -175,10 +96,16 @@ public class HeartsGameState extends GameState {
         return suit;
     }
 
+    /**
+     * Returns scores for players
+     */
     public int[] getScores(){
         return Scores;
     }
 
+    /**
+     * Set scores for the player who won points
+     */
     public void setScores(int score, int idx){
         Scores[idx]= Scores[idx]+score;
     }
@@ -202,6 +129,13 @@ public class HeartsGameState extends GameState {
     }
 
     /**
+     * Set currentPlayerIndex
+     */
+    public void setCurrentPlayerIndex(int index){
+        CurrentPlayerIndex = index;
+    }
+
+    /**
      * Tells which player's turn it is.
      *09
      * @return the index (0 , 1, 2, 3) of the player whose turn it is.
@@ -210,53 +144,42 @@ public class HeartsGameState extends GameState {
         return CurrentPlayerIndex;
     }
 
+    /**
+     * Set baseSuit
+     */
+    public void setBaseSuit(Suit suit){baseSuit=suit;}
+
+    /**
+     * Returns baseSuit
+     */
+    public Suit getBaseSuit(){return baseSuit;}
+
     public void clearTable(){
+        //clears the table by setting cardsOnTable equal to null
         for(int i=0; i<4; i++){
             cardsOnTable[i]=null;
         }
 
     }
 
-    // TODO take away if already addressed in local game
-    public void addCardToTable(Card card, int playerIndex){
-        //TODO might have to update cardPlayedBool/cardsPlayed in localGame
-//        if (!(cardPlayedBool[playerIndex])){
-//            cardsPlayed[playerIndex] = card;
-//            turn++;
-//        }
-    }
-
     /**
      * Changes the Current Player to the next player.
      */
     public void NextTurn(){
-        //current player now is being updated in local game
+        //updates currentPlayer and makes them take turns in a clockwise direction on the GUI
         if(CurrentPlayerIndex == 3){
             CurrentPlayerIndex = 0;
         }
         else {
             CurrentPlayerIndex++;
         }
-
-        //check if it's time to update the base suit for a new trick
-//        int count = 0;
-//        int index =0;
-//        for(int i=0; i<cardsOnTable.length; i++){
-//            //check number of cards on table
-//            if(cardsOnTable[i]!=null){
-//                count++;
-//                index = i;
-//            }
-//        }
-//        //if there is only one card on the table, make that the suit for the trick
-//        if(count==1){
-//            baseSuit = cardsOnTable[index].getSuit();
-//            firstCardIndex = index;
-//            return;
-//        }
     }
 
+    /**
+     * Deal cards and initializes card piles
+     */
     public void deal(){
+        //create a standard 52 deck of cards
         CardDeck defaultDeck=new CardDeck();
         defaultDeck.add52();
         defaultDeck.shuffle();
@@ -268,6 +191,7 @@ public class HeartsGameState extends GameState {
         piles[2] = new CardDeck(); // create empty deck
         piles[3] = new CardDeck(); // create empty deck
 
+        //deal out 13 cards to each player's corresponding pile
         int counter = 0;
         for(int i=0; i<defaultDeck.cards.size();i++){
             piles[counter].add(defaultDeck.get(i));
@@ -275,11 +199,11 @@ public class HeartsGameState extends GameState {
         }
     }
 
-    // TODO move to LG initialize in LG
     /*
-     * Returns the id of the player with the two of clubs
+     * Returns the index of the player with the two of clubs
+     * and the baseSuit for the first trick
      * @return
-*/
+     */
     public int hasTwoOfClubs(){
         Card twoClubs = new Card(Rank.TWO, Suit.Club);
         baseSuit=Suit.Club;
@@ -293,56 +217,4 @@ public class HeartsGameState extends GameState {
     }
 
 
-    // TODO ?
-    /**
-     * scales a rectangle, moving all edges with respect to its center
-     *
-     * @param rect
-     *        the original rectangle
-     * @param factor
-     *        the scaling factor
-     * @return
-     *        the scaled rectangle
-     */
-    private static RectF scaledBy(RectF rect, float factor) {
-        // compute the edge locations of the original rectangle, but with
-        // the middle of the rectangle moved to the origin
-        float midX = (rect.left+rect.right)/2;
-        float midY = (rect.top+rect.bottom)/2;
-        float left = rect.left-midX;
-        float right = rect.right-midX;
-        float top = rect.top-midY;
-        float bottom = rect.bottom-midY;
-
-        // scale each side; move back so that center is in original location
-        left = left*factor + midX;
-        right = right*factor + midX;
-        top = top*factor + midY;
-        bottom = bottom*factor + midY;
-
-        // create/return the new rectangle
-        return new RectF(left, top, right, bottom);
-    }
-
-
-//    /**
-//     * Finds Highest Card and returns it
-//     * @return
-//     */
-//    public Card getHighestCard() {
-//        Card rtrnCard = cardsPlayed[0];
-//        int i;
-//        int tempInt;
-//        int currentHighestRank = cardsPlayed[0].getIntValue();
-//        for(i = 0; i < cardsPlayed.length; i++){
-//            if(cardsPlayed[i].getSuit().equals(suit)){
-//                tempInt = cardsPlayed[i].getIntValue();
-//                if((currentHighestRank < tempInt)&&(!(cardsPlayed[i].equals(rtrnCard)))){
-//                    rtrnCard = cardsPlayed[i];
-//                    currentHighestRank = cardsPlayed[i].getIntValue();
-//                }
-//            }
-//        }
-//        return rtrnCard;
-//    }
 }

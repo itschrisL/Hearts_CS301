@@ -1,7 +1,5 @@
 package edu.up.cs301.hearts;
 
-import android.util.Log;
-
 import edu.up.cs301.card.Card;
 import edu.up.cs301.card.Rank;
 import edu.up.cs301.card.Suit;
@@ -20,7 +18,6 @@ public class HeartsLocalGame extends LocalGame {
     HeartsGameState currentGame;
     public boolean startOfTrick;
     private final static int WIN_TARGET = 100;
-    //HeartsGameState HGS;
 
     /**
      * Constructor for the HeartsLocalGame.
@@ -32,6 +29,9 @@ public class HeartsLocalGame extends LocalGame {
     }
 
     /**
+     * validSuit takes in a card and playerIndex to determine if the
+     * suit of the card is valid for this trick.
+     *
      * @param card
      * @return true if right suit
      */
@@ -86,7 +86,8 @@ public class HeartsLocalGame extends LocalGame {
         if(currentGame.cardsOnTable[index] == null){
             currentGame.cardsOnTable[index] = card;
             currentGame.piles[index].remove(card);
-            currentGame.turn++;}
+            currentGame.turn++;
+            }
 
         //check if it's the end of a trick
         int emptySpacesCount =0;
@@ -122,14 +123,14 @@ public class HeartsLocalGame extends LocalGame {
 
 
         //if it's a humanPlayer, update the GUI by changing the doubleTap and singlTap variables.
-        GamePlayer p = players[currentGame.CurrentPlayerIndex];
-
+        //GamePlayer p = players[currentGame.CurrentPlayerIndex];
+/*
         if(p instanceof HeartsHumanPlayer){
             HeartsHumanPlayer hp = (HeartsHumanPlayer) p;
             hp.doubleTap = true;
             hp.singleTap = false;
             players[index] = hp;
-        }
+        }*/
         //TODO might have to do something similar for AI players
 
         //it's a valid card so return true
@@ -137,6 +138,7 @@ public class HeartsLocalGame extends LocalGame {
     }
 
     /**
+     * checks if the card is in the current player's hand
      * @param card
      * @return
      */
@@ -144,20 +146,8 @@ public class HeartsLocalGame extends LocalGame {
         return currentGame.piles[currentGame.getCurrentPlayerIndex()].containsCard(card);}
 
     /**
-     * @param player
-     * @return
-     */
-    public boolean playersTurn(GamePlayer player) {
-        if (players[currentGame.CurrentPlayerIndex].equals(player)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * The winTrick method determines which player won the round
-     * and sets their isWinner boolean to true.
+     * The winTrick method determines which player won the trick
+     *
      */
     public int winTrick() {
         //find suit of first card played
@@ -170,12 +160,11 @@ public class HeartsLocalGame extends LocalGame {
             if (currentGame.cardsOnTable[i].getRankIndex(currentGame.cardsOnTable[i].getRank()) > highestFace) {
                 highestFace = currentGame.cardsOnTable[i].getRankIndex(currentGame.cardsOnTable[i].getRank());
                 winnerIndex=i;
-                //rank = currentGame.cardsOnTable[i].getRank();
             }
         }
         startOfTrick = true;
         //set the winner of this trick to be the starting player for the next trick
-        currentGame.setCurrentPlayer(winnerIndex);
+        currentGame.setCurrentPlayerIndex(winnerIndex);
 
         //do players still have cards to play?
         boolean newRound = true;
@@ -193,6 +182,12 @@ public class HeartsLocalGame extends LocalGame {
 
     }
 
+    /**
+     * The calculatePoints method calculates the number
+     * of points that should be added to the player who
+     * collects the cards after a trick.
+     *
+     */
     public int calculatePoints() {
         int points = 0;
         for (Card c : currentGame.cardsOnTable) {
@@ -208,12 +203,23 @@ public class HeartsLocalGame extends LocalGame {
         return points;
     }
 
+    /**
+     * The updateScore method sets the score of player who
+     * won the cards from a trick.
+     *
+     */
     public void updateScore() {
         int p = winTrick();
         int points = calculatePoints();
         currentGame.setScores(points, p);
     }
 
+    /**
+     * The threeCardPass method passes a CardDeck containing
+     * three cards from one player to another. The direction
+     * of passing cards is determined by the round.
+     *
+     */
     public void threeCardPass(CardDeck[] cards) {
         int i;
         int j;
@@ -257,6 +263,11 @@ public class HeartsLocalGame extends LocalGame {
         }
     }
 
+    /**
+     * The setNewRound method deals cards to all players,
+     * finds the starting player, and clears the table.
+     *
+     */
     public void setNewRound() {
         currentGame.deal();
         currentGame.hasTwoOfClubs();
@@ -264,36 +275,47 @@ public class HeartsLocalGame extends LocalGame {
         currentGame.round++;
     }
 
+    /**
+     * The addCardToTable method adds a card to the
+     * cardsOnTable array, removes it from the player's
+     * card pile and increments the index of which turn
+     * it is.
+     *
+     */
     public void addCardToTable(Card card, int playerIndex) {
 
         if (card == null) {
             return;
         }
 
-
-//        if (currentGame.turn == 0) {
-//            currentGame.baseSuit = card.getSuit();
-//        }
+        if (currentGame.turn == 0) {
+            currentGame.baseSuit = card.getSuit();
+        }
         currentGame.cardsOnTable[playerIndex] = card;
-        //TODO remove that card from player's deck
         currentGame.piles[playerIndex].remove(card);
         currentGame.turn++;
-//        if (!(currentGame.cardPlayedBool[playerIndex]))
-//        {
-//            currentGame.cardsOnTable[playerIndex] = card;
-//            //TODO remove that card from player's deck
-//            currentGame.turn++;
-
-
-//        }
+        if (!(currentGame.cardPlayedBool[playerIndex]))
+        {
+            currentGame.cardsOnTable[playerIndex] = card;
+            currentGame.turn++;
+        }
     }
 
+    /**
+     * The clearTable method clears the cards on the table
+     *
+     */
     public void clearTable() {
         for (int i = 0; i < 4; i++) {
             currentGame.cardsOnTable[i] = null;
         }
     }
 
+    /**
+     * The sendUpdatedStateTo() method sends the updated version
+     * of our HeartsGameState to a specific player.
+     *
+     */
     protected void sendUpdatedStateTo(GamePlayer p) {
         int thisPlayerNum = this.getPlayerIdx(p);
         HeartsGameState tempState = new HeartsGameState(currentGame);
@@ -301,6 +323,11 @@ public class HeartsLocalGame extends LocalGame {
         p.sendInfo(tempState);
     }
 
+    /**
+     * The canMove method determines if a player attempting
+     * to make a move is legally allowed to.
+     *
+     */
     protected boolean canMove(int idx) {
         boolean myTurn;
         int index = idx;
@@ -314,6 +341,11 @@ public class HeartsLocalGame extends LocalGame {
         return myTurn;
     }
 
+    /**
+     * The checkIfGameOver method checks if the game has ended
+     * and it displays the winner(s) if it has.
+     *
+     */
     protected String checkIfGameOver() {
         //have they reached 100points
         int[] scores = currentGame.getScores();
@@ -343,16 +375,19 @@ public class HeartsLocalGame extends LocalGame {
             }
         }
 
-        //TODO correctly display which player(s) won
-        if (highestScore >= 100) {
-            //TODO call method announceWinner for heart human player in array to make popup message of winner display
-            //hp.announceWinner();
+        //displays which player(s) won
+        if (highestScore >= WIN_TARGET) {
             return "Game over. " + tie + " is the winner!!";
         }
 
         return null;
     }
 
+    /**
+     * The makeMove method receives actions sent by players
+     * and determines if it is a legal move or not
+     *
+     */
     protected boolean makeMove(GameAction action) {
 
         // check that we have hearts action; if so cast it
@@ -364,7 +399,6 @@ public class HeartsLocalGame extends LocalGame {
         // get the index of the player making the move; return false
         int thisPlayerIdx = getPlayerIdx(h_move_action.getPlayer());
 
-        //TODO change this method?
         if (!canMove(thisPlayerIdx)) { // illegal player
             return false;
         }
@@ -380,17 +414,13 @@ public class HeartsLocalGame extends LocalGame {
                 }
             }
             if (legalPass) {
-                //TODO fix this method
-                //threeCardPass(cardPassAction.getCardPass());
+                threeCardPass(cardPassAction.getCardPass());
             } else {
                 return false;
             }
         }
-        //TODO incorporate pass only to hard game
-        //TODO make sure players have to pass before they can play a card
 
         else if (h_move_action.isPlayCard()) { // we have a "play card " action
-            Log.i("FOUND", " PLAYCARD ACTION");
 
             HeartsPlayCardAction playCardAction = (HeartsPlayCardAction) h_move_action;
 
@@ -402,30 +432,16 @@ public class HeartsLocalGame extends LocalGame {
                 if (validCard(playCardAction.getCard(), thisPlayerIdx)) {
                     currentGame.cardsOnTable[thisPlayerIdx]=playCardAction.getCard();
                     // play that valid card
-                    /*
-                    currentGame.addCardToTable(playCardAction.getCard(), thisPlayerIdx);
-                    //TODO nextTurn() doesn't work. We change currentPlayer index in local game
-                    //currentGame.NextTurn();
-                    //if end of trick, update scores
-                    if (currentGame.turn == 3) {
-                        updateScore();
-                        clearTable();
-                    }
-                    */
+
                 } else {
                     return false;
                 }
-
             }
         } else { // some unexpected action
             return false;
         }
 
         // return true, because the move was successful if we get here
-        //sendUpdatedStateTo(players[thisPlayerIdx]);
-        Log.i("LEGAL MOVE", " returning true");
-
         return true;
-
     }
 }

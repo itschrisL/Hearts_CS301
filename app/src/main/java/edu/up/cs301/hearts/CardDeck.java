@@ -1,18 +1,16 @@
 package edu.up.cs301.hearts;
 
-
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import edu.up.cs301.card.Card;
 import edu.up.cs301.card.Suit;
-import edu.up.cs301.card.Card;
 
 
 /**
  *
  *
- * Created by emmasoriano on 10/19/17.
+ * @author Steven Vegdahl, Chris Lytle
+ * @version November 2017
  */
 
 public class CardDeck implements Serializable {
@@ -159,11 +157,7 @@ public class CardDeck implements Serializable {
         }
     }
 
-    //SARAH ADDED THIS!!!!!!!!!!!!!!!!!!
-    //
-    //
-    //
-    //BC I NEED IT!!
+
     public void remove(Card c) {
         // synchronize so that the underlying ArrayList is not accessed
         // inconsistently
@@ -187,7 +181,6 @@ public class CardDeck implements Serializable {
      */
     public void nullifyDeck() {
         // synchronize so that we don't get any race conditions (e.g., with
-        // shuffle()
         synchronized (this.cards) {
             // null out each card
             for (int i = 0; i < cards.size(); i++) {
@@ -225,20 +218,14 @@ public class CardDeck implements Serializable {
     }
 
     public Card peekAtPlayerCard() {
-        //System.out.println("in peekCard ");
         synchronized (this.cards) {
-            //System.out.println("in synchronized card ");
             if (cards.isEmpty()) {
-                //System.out.println("deck is empty");
                 return null;
             }
 
             else {
-                //System.out.println("values in card array:  " + cards.get(currCard));
                 currCard = 0;
                 for (int i = 0; i <= cards.size(); i++) {
-                    //System.out.println("card size:   " + cards.size());
-                    //System.out.println("curr card value:  " + cards.get(currCard));
                     if (i<0) currCard=0;
                     else if(i==0||i==1) currCard=0;
                     else {
@@ -291,10 +278,6 @@ public class CardDeck implements Serializable {
      * //
      */
     public void sortCards(CardDeck hand) {
-        // sorts cards based on suit
-        //TODO:
-        // needs to be array, NOT ArrayList to have an actual order
-
         ArrayList<Card> sortedCards= new ArrayList<Card>();
         Card[] sortedCardsArray;
 
@@ -325,167 +308,3 @@ public class CardDeck implements Serializable {
 
 }
 
-//public class CardDeck {
-//
-//
-//    HeartsCard[] deck = new HeartsCard[52];
-//    public String[] suitValues = {"Clubs", "Spades", "Diamonds", "Hearts"};
-//
-//    public CardDeck(){
-//        //initialize the deck so the cards are "in order"
-//        int i, j;
-//        int index = 0;
-//        for (i = 0; i < 4; i++){
-//            for(j = 2; j < 13; j++){
-//                deck[index] = new HeartsCard(j, i);
-//                index++;
-//            }
-//        }
-//        shuffle();
-//    }
-//
-//    /**
-//     * Shuffles the deck
-//     */
-//    public void shuffle(){
-//        int i, ranNum;
-//        ArrayList<HeartsCard> tempList = new ArrayList<HeartsCard>(Arrays.asList(deck));
-//        HeartsCard[] tempDeck = new HeartsCard[52];
-//
-//        for (i = 0; i < 52; i++){
-//            ranNum =(int)(Math.random()*(tempList.size()-1));
-//            tempDeck[i] = tempList.get(ranNum);
-//            tempList.remove(ranNum);
-//        }
-//        deck = tempDeck;
-//    }
-//
-//    /**
-//     *
-//     * @return HeartsCard[4][13]
-//     * The four players then their hands of 13 cards
-//     */
-//    public HeartsCard[][] dealHand() {
-//        shuffle();
-//        HeartsCard[][] hand = new HeartsCard[4][13];
-//
-//        int counter = 0;
-//        int i, j;
-//
-//        for (i = 0; i < 4; i++) {
-//            for (j = 0; j < hand[0].length; j++) {
-//                hand[i][j] = deck[counter];
-//                counter++;
-//            }
-//            sortCards(hand[i]);
-//        }
-//        //takes 13 cards from top of deck, removes them from deck and adds them to players hand
-//
-//
-//        return hand;
-//    }
-//
-//    /**
-//     * sorts a given set of cards by suit and value
-//     * @param cards
-//     * @return
-//     */
-//    public HeartsCard[] sortCards(HeartsCard[] cards){
-////        // sorts cards based on suit and
-////        int i, j;
-////        int indexCounter = 0;
-////        int count = 0;
-////        HeartsCard[] rtrnHand = new HeartsCard[cards.length];
-////        ArrayList<HeartsCard> cardsToSort = new ArrayList<>();
-////
-////        if(cards != null) {
-////            for (i = 0; i < 4; i++) {
-////                cardsToSort = new ArrayList<>();
-////                for (j = 0; j < cards.length - 1; j++) {
-////                    if(cards[i] != null) {
-////                        if (cards[j].suitValueIndex == i) {
-////                            cardsToSort.add(cards[j]);
-////                            count++;
-////                        }
-////                    }
-////                }
-////                insertionSort(cardsToSort);
-////                for(HeartsCard C : cardsToSort){
-////                    rtrnHand[indexCounter] = C;
-////                    indexCounter++;
-////                }
-////                if(indexCounter >= cards.length){
-////                    break;
-////                }
-////            }
-////        }
-////        return rtrnHand;
-//        return null;
-//    }
-//
-//    /**
-//     * Uses the insertion sort algorithm to sort cards based on face value
-//     * @param cards
-//     * @return
-//     */
-//    public ArrayList<HeartsCard> insertionSort(ArrayList<HeartsCard> cards){
-//
-//        int i, j;
-//        HeartsCard tempCard;
-//
-//        for(i = 1; i < cards.size(); i++){
-//            tempCard = cards.get(i);
-//            j = i - 1;
-//            while ((j >= 0) && (cards.get(j).faceValue > tempCard.faceValue)){
-//                cards.set(j+1, cards.get(j));
-//                j = j-1;
-//            }
-//            cards.set(j+1, tempCard);
-//        }
-//
-//        return cards;
-//    }
-//
-//    /**
-//     * Uses a quick sort algorithm to sort cards
-//     * based on face value, not suit.
-//     * @param cards
-//     * @return
-//     */
-//    public ArrayList<HeartsCard> quickSort(ArrayList<HeartsCard> cards){
-//
-////        // Declare Variables
-////        ArrayList<HeartsCard> rtnCards = new ArrayList<>();
-////        ArrayList<HeartsCard> greater = new ArrayList<>();
-////        ArrayList<HeartsCard> less = new ArrayList<>();
-////        HeartsCard pivotCard;
-////        int pIndex;
-////
-////        if(cards != null){
-////            if(cards.size() == 1){
-////                return cards;
-////            }
-////            else{
-////
-////                pIndex = cards.size()/2;
-////                pivotCard = cards.get(pIndex);
-////                for(HeartsCard c : cards){
-////                    if(!(c.equals(pivotCard))){
-////                        if(c.faceValue > pivotCard.faceValue){
-////                            greater.add(c);
-////                        }
-////                        else{
-////                            less.add(c);
-////                        }
-////                    }
-////                }
-////
-////                rtnCards.addAll(quickSort(greater));
-////                rtnCards.add(pivotCard);
-////                rtnCards.addAll(quickSort(less));
-////            }
-////        }
-////        return rtnCards;
-//        return null;
-//    }
-//}

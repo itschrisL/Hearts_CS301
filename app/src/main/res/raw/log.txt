@@ -1,0 +1,53 @@
+Date: 10/27
+Problem: We tried to create our own card and deck classes
+Solution: we realized it was easier and cleaner to use Dr. Vegdahls
+
+Date: 11/5
+Problem: we didn’t realize we were supposed to be using the game framework so we started from scratch
+Solution: using slapjack as a model for our Hearts card game
+
+Date: 11/6
+Problem: When drawing human player cards on the GUI for them to see cards were not appearing.
+Solution: saw Vegdahl, there was a method setting cards to null, deleted
+
+Date: 11/10
+Problem: not sure how to tell when a card has been touched
+Solution: Vegdahl, creating an array of booleans in addition to card location array and the cards themselves.
+Compare x,y coord of touch with if the coords are contained in the location array change the bool position to true to alert the card to move
+
+Date: 11/17
+Problem: human playing a card they didn't want
+Solution: asking the user to double tap to confirm their card choice
+
+Date: 11/17
+Problem: right before alpha testing our program wasn't running/ showing GUI
+Solution: Dr. Vegdahl helped us fix the GUI by telling us to have it so that the cards aren't re-drawn after every tick
+
+Date: 11/27
+Problem: Github repository wasn’t working, everything turned red and wouldn’t compile.
+Solution: Dr. Vegdahl helped us with Github issues after alpha test by creating a new repository and adding us as collaborators.
+We learned that we have to be careful to not push and pull a lot at the same time.
+
+Rough date
+Problem: AI can't play cards because the currentPlayer index never changes, don't know why
+Solution: Dr. Vegdahl helped us see that we weren't properly initializing the GameState, now we can get the game conditions to change the player index
+
+Rough date
+Problem: BaseSuit can't be referenced, it changes every time the AI looks at it
+Solution: Dr. Vegdahl gave us the idea to put it into GameState, where it can be referenced by the human player and AI players without an issue
+
+Date: 12/5
+Problem: Had trouble getting an “info” button to create a popup
+Solution: Saw tutors, had to move the button png to res file even though it was an android internalized image.  Had to link with Main Activity through the xml ‘onClick'.
+
+Date:12/5
+Problem: We needed a way to announce game winner
+Solution: We learned from the tutors that we can use an alert popup
+
+Date: 12/7
+Problem: Our GameState object in localGame was not initializing our players array, which caused NullPointer exceptions.
+Solution: Dr. Tribelhorn told us to only reference player objects only in localGame and NOT gameState. Once we implemented this it fixed our problem.
+
+Date: 12/8
+Problem: Our code is playing the first card just fine, but it goes into a never-ending loop after that
+Solution: Dr. Vegdahl found that we were returning a string in our popup that announced the winner, which made the game think it was over. We returned null.

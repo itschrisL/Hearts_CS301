@@ -30,8 +30,8 @@ import android.widget.TextView;
 /**
  * this is the primary activity for Hearts game
  *
- * @author Steven R. Vegdahl
- * @version July 2013
+ * @author Steven R. Vegdahl, Emma Soriano
+ * @version November 2017
  */
 public class HeartsMainActivity extends GameMainActivity {
 
@@ -107,30 +107,26 @@ public class HeartsMainActivity extends GameMainActivity {
             public GamePlayer createPlayer(String name) {
                 return new HeartsHumanPlayer(name);
             }});
-        playerTypes.add(new GamePlayerType("human player (yellow)") {
-            public GamePlayer createPlayer(String name) {
-                return new HeartsHumanPlayer(name);
-            }
-        });
         playerTypes.add(new GamePlayerType("computer player (easy)") {
             public GamePlayer createPlayer(String name) {
                 return new EasyAI(name);
             }
         });
-        //playerTypes.add(new GamePlayerType("computer player (slow)") {
-        // public GamePlayer createPlayer(String name) {
-        // return new HardAI(name);
-        // }
-        //  });
+        //potential hardAI, didn't have time to fix all bugs
+//        playerTypes.add(new GamePlayerType("computer player (hard)") {
+//         public GamePlayer createPlayer(String name) {
+//         return new HardAI(name);
+//         }
+//          });
 
         // Create a game configuration class for Hearts
         GameConfig defaultConfig = new GameConfig(playerTypes, 4, 4, "Hearts", PORT_NUMBER);
 
         // Add the default players
         defaultConfig.addPlayer("Human", 0);
-        defaultConfig.addPlayer("Computer1", 2);
-        defaultConfig.addPlayer("Computer2", 2);
-        defaultConfig.addPlayer("Computer3", 2);
+        defaultConfig.addPlayer("Computer1", 1);
+        defaultConfig.addPlayer("Computer2", 1);
+        defaultConfig.addPlayer("Computer3", 1);
 
 
         // Set the initial information for the remote player

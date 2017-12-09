@@ -1,35 +1,23 @@
 package edu.up.cs301.hearts;
 
-import android.app.Activity;
-import android.app.Notification;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
 
 import java.util.Random;
-
-import edu.up.cs301.animation.AnimationSurface;
-import edu.up.cs301.animation.Animator;
 import edu.up.cs301.card.Card;
 import edu.up.cs301.card.Rank;
 import edu.up.cs301.card.Suit;
 import edu.up.cs301.game.GameComputerPlayer;
-import edu.up.cs301.game.GameMainActivity;
-import edu.up.cs301.game.GamePlayer;
-import edu.up.cs301.game.R;
 import edu.up.cs301.game.infoMsg.GameInfo;
 import edu.up.cs301.game.infoMsg.IllegalMoveInfo;
 import edu.up.cs301.game.infoMsg.NotYourTurnInfo;
-import edu.up.cs301.slapjack.SJSlapAction;
+
 
 /**
- * Updated by S. Seydlitz on 11/17/17
+ * EasyAI class is a computer player who plays random
+ * legal cards, making it a very easy opponent to beat.
+ *
+ * @author Sarah Seydlitz
+ * @version November 2017
  */
-
 public class EasyAI extends GameComputerPlayer {
 
     //variables
@@ -69,8 +57,6 @@ public class EasyAI extends GameComputerPlayer {
 
 
         if (info instanceof IllegalMoveInfo || info instanceof NotYourTurnInfo) {
-            Log.i("computer player", "made illegal move");
-
             return;
         }
 
@@ -89,11 +75,9 @@ public class EasyAI extends GameComputerPlayer {
             if(ind == state.CurrentPlayerIndex){
                 strategy();
                 sleep(2000);
-                Log.i(ind + " SEND PLAYCARDACTION  ", "currentplayer is" +state.CurrentPlayerIndex + ". I played "+chosenCard+"");
                 game.sendAction(new HeartsPlayCardAction(this, chosenCard));
                 //playCard(currentHand);
             }
-            Log.i("computer player", "receiving");
         }
 
 
@@ -107,7 +91,6 @@ public class EasyAI extends GameComputerPlayer {
         else {
             //pick a card at random from EasyAI's card deck
             for (Card c : currentHand.cards) {
-                Log.i("strategy",""+super.playerNum+"["+state.CurrentPlayerIndex+"] "+c);
                 if (c.getSuit().equals(state.baseSuit)) {
                     chosenCard = c;
                     break;

@@ -22,10 +22,11 @@ import edu.up.cs301.game.infoMsg.NotYourTurnInfo;
 
 
 /**
+ * HeartsHumanPlayer class allows for users to play a game
+ * of Hearts and interact with the GUI.
  *
- *
- * @author Steven R. Vegdahl
- * @version July 2013
+ * @author Lindsey Lavee
+ * @version December 2017
  */
 public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
@@ -34,38 +35,40 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
     TextView player3Score;
     TextView humanScore;
     String[] playerNames= new String[4];
-    int count=0;
-    Canvas g = new Canvas();
-    private  boolean [] cardLocationBool;
-    boolean drawMe=false;
-    boolean doubleTap=false;
-    Card cardToPlay;
-    boolean singleTap=false;
-    private  RectF [] yellowCardLocation;
-    private  RectF [] cardLocation;
-    private Card c;
-    private Card selectedCard;
-    private  Card [] humanCards;
-    boolean isMyTurn=false;
+    int count=52;
     int index;
+    int drawCardCount=0;
+    boolean doubleTap=false;
+    boolean singleTap=false;
+    private Card selectedCard;
+    private Card cardToPlay;
+    private  RectF [] yellowCardLocation= new RectF[14];
+    private  RectF [] cardLocation = new RectF[14];
 
+    //card spaces on the 'table'
+    RectF Player0CardSpace;
+    RectF Player1CardSpace;
+    RectF Player2CardSpace;
+    RectF Player3CardSpace;
+
+    //three card pass variables
     Card[] cardsToPass=new Card[3];
-
     boolean doubleTapCard1=false;
     boolean singleTapCard1=false;
     boolean doubleTapCard2=false;
     boolean singleTapCard2=false;
     boolean doubleTapCard3=false;
     boolean singleTapCard3=false;
-
-    float x;
-    float y;
     Card selectedCard1;
     Card selectedCard2;
     Card selectedCard3;
     int card1Location;
     int card2Location;
     int card3Location;
+
+    //var to see where human touched
+    float x;
+    float y;
 
     // sizes and locations of card decks and cards, expressed as percentages
     // of the screen height and width
@@ -97,6 +100,8 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
         super(name);
         playerNames = super.allPlayerNames;
         index = super.playerNum;
+        setCardLocations();
+        drawCardTable();
     }
 
     /**
@@ -107,9 +112,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
      */
     @Override
     public void receiveInfo(GameInfo info) {
-        Log.i("HeartsHumanPlayer", "receiving updated state ("+info.getClass()+")");
         if (info instanceof IllegalMoveInfo || info instanceof NotYourTurnInfo) {
-            Log.i("human player", "made illegal move");
 
             // if we had an out-of-turn or illegal move, flash the screen
             surface.flash(Color.RED, 50);
@@ -123,7 +126,6 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
             // going, there is no need to explicitly display anything. That will happen
             // at the next animation-tick, which should occur within 1/20 of a second
             this.state = (HeartsGameState)info;
-            Log.i("human player", "receiving");
         }
     }
 
@@ -155,8 +157,13 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
         if (state != null) {receiveInfo(state);}
     }
 
-    //TODO work here
+    /**
+     letting the human player select 3 cards to pass to one of the
+     computer players.  Replacing these empty slots with the cards they
+     receive in return.
+     */
     public void CardPass(){
+        /*
         Paint p = new Paint();
         p.setColor(Color.YELLOW);
 
@@ -271,6 +278,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
             cardsToPass[2] = selectedCard3; //needs to make its way to state
             card3Location=count;
         }
+        */
     }
 
     /**
@@ -314,6 +322,76 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
         return false;
     }
 
+    public void setCardLocations() {
+        // intialize values for the locations of human player's hand
+
+        for (int row = 1; row < 8; row++) {
+            for (int col = 1; col < 3; col++) {
+
+                float rectRight = 210;
+                float rectTop = 1000;
+                float rectBottom = 1300;
+                float rectLeft = 60;
+
+                rectLeft = rectLeft + ((row - 1) * 200);
+                rectRight = rectRight + ((row - 1) * 200);
+                rectTop = rectTop + ((col - 1) * 325);
+                rectBottom = rectBottom + ((col - 1) * 325);
+
+                cardLocation[drawCardCount] = new RectF(rectLeft, rectTop, rectRight, rectBottom);
+
+                float rectRightY = 230;
+                float rectTopY = 990;
+                float rectBottomY = 1320;
+                float rectLeftY = 50;
+
+                rectLeftY = rectLeftY + ((row - 1) * 200);
+                rectRightY = rectRightY + ((row - 1) * 200);
+                rectTopY = rectTopY + ((col - 1) * 325);
+                rectBottomY = rectBottomY + ((col - 1) * 325);
+
+                yellowCardLocation[drawCardCount] = new RectF(rectLeftY, rectTopY, rectRightY, rectBottomY);
+                drawCardCount++;
+
+
+            }
+        }
+
+    }
+
+    public void drawCardTable(){
+        float HrectLeft = 650;
+        float HrectRight = 800;
+        float HrectTop = 500;
+        float HrectBottom = 700;
+
+        Player0CardSpace = new RectF(HrectLeft, HrectTop, HrectRight, HrectBottom);
+
+        float AI1rectLeft = 250;
+        float AI1rectRight = 400;
+        float AI1rectTop = 300;
+        float AI1rectBottom = 500;
+
+        Player1CardSpace = new RectF(AI1rectLeft, AI1rectTop, AI1rectRight, AI1rectBottom);
+
+        float AI2rectLeft = 650;
+        float AI2rectRight = 800;
+        float AI2rectTop = 100;
+        float AI2rectBottom = 300;
+
+        Player2CardSpace = new RectF(AI2rectLeft, AI2rectTop, AI2rectRight, AI2rectBottom);
+
+        float AI3rectLeft = 1050;
+        float AI3rectRight = 1200;
+        float AI3rectTop = 300;
+        float AI3rectBottom = 500;
+
+
+        Player3CardSpace = new RectF(AI3rectLeft, AI3rectTop, AI3rectRight, AI3rectBottom);
+
+    }
+
+
     /**
      * callback-method: we have gotten an animation "tick"; redraw the screen image:
      * - the middle deck, with the top card face-up, others face-down
@@ -325,152 +403,24 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
      */
 
     public void tick(Canvas g) {
-
         // ignore if we have not yet received the game state
         if (state == null) return;
 
-        //if cards haven't been drawn, draw the human's cards
-        if (cardLocation ==null&& yellowCardLocation ==null&&humanCards==null) {
+        //Draw the table card slot for player 0
+        drawCard(g, Player0CardSpace, state.cardsOnTable[0]);
+        //Draw the table card slot for player 1
+        drawCard(g, Player1CardSpace, state.cardsOnTable[1]);
+        //Draw the table card slot for player 2
+        drawCard(g, Player2CardSpace, state.cardsOnTable[2]);
+        //Draw the table card slot for player 3
+        drawCard(g, Player3CardSpace, state.cardsOnTable[3]);
 
-            cardLocation = new RectF[14];
-            yellowCardLocation = new RectF[14];
-            humanCards = new Card[14];
-            cardLocationBool = new boolean[14];
-            //setNames();
-
-            // get the height and width of the animation surface
-            int height = surface.getHeight();
-            int width = surface.getWidth();
-
-            /***********************************************************************/
-            // intialize values for the locations of human player's hand
-
-            for (int row = 1; row < 8; row++) {
-                for (int col = 1; col < 3; col++) {
-
-                    if (count < state.piles[0].size()) {
-                        humanCards[count] = state.piles[0].get(count);
-                    }
-
-                    float rectRight = 210;
-                    float rectTop = 1000;
-                    float rectBottom = 1300;
-                    float rectLeft = 60;
-
-                    rectLeft = rectLeft + ((row - 1) * 200);
-                    rectRight = rectRight + ((row - 1) * 200);
-                    rectTop = rectTop + ((col - 1) * 325);
-                    rectBottom = rectBottom + ((col - 1) * 325);
-
-                    cardLocation[count] = new RectF(rectLeft, rectTop, rectRight, rectBottom);
-
-                    float rectRightY = 230;
-                    float rectTopY = 990;
-                    float rectBottomY = 1320;
-                    float rectLeftY = 50;
-
-                    rectLeftY = rectLeftY + ((row - 1) * 200);
-                    rectRightY = rectRightY + ((row - 1) * 200);
-                    rectTopY = rectTopY + ((col - 1) * 325);
-                    rectBottomY = rectBottomY + ((col - 1) * 325);
-
-                    yellowCardLocation[count] = new RectF(rectLeftY, rectTopY, rectRightY, rectBottomY);
-                    count++;
-
-
-                }
-            }
-        }
-
-        //draw human player's hand
-        Paint p = new Paint();
-        p.setColor(Color.YELLOW);
-
-        //Draw the table card slot for the human player
-        float HrectLeft = 650;
-        float HrectRight = 800;
-        float HrectTop = 500;
-        float HrectBottom = 700;
-        RectF HcardPile = new RectF(HrectLeft, HrectTop, HrectRight, HrectBottom);
-
-        c = state.getDeck(0).peekAtPlayerCard();
-
-        drawCard(g, HcardPile,state.cardsOnTable[0]);
-
-        // draw the First AI's played card
-        float AI1rectLeft = 250;
-        float AI1rectRight = 400;
-        float AI1rectTop = 300;
-        float AI1rectBottom = 500;
-
-        RectF aI1cardPile = new RectF(AI1rectLeft, AI1rectTop, AI1rectRight, AI1rectBottom);
-        drawCard(g, aI1cardPile, state.cardsOnTable[1]);
-
-        float AI2rectLeft = 650;
-        float AI2rectRight = 800;
-        float AI2rectTop = 100;
-        float AI2rectBottom = 300;
-
-        RectF aI2cardPile = new RectF(AI2rectLeft, AI2rectTop, AI2rectRight, AI2rectBottom);
-        drawCard(g, aI2cardPile, state.cardsOnTable[2]);
-
-        // draw the third AI's played card
-
-        float AI3rectLeft = 1050;
-        float AI3rectRight = 1200;
-        float AI3rectTop = 300;
-        float AI3rectBottom = 500;
-
-        RectF aI3cardPile = new RectF(AI3rectLeft, AI3rectTop, AI3rectRight, AI3rectBottom);
-        drawCard(g, aI3cardPile, state.cardsOnTable[3]);
-
-        /******************************************************/
-
+        //draw a dot by the current players card space
+        for (int i = 0; i < 4; i++) {drawDot(g, state.CurrentPlayerIndex);}
         //draws cards for human to see
-        for(int i=0; i<Math.min(13,state.piles[0].size());i++) {
-            drawCard(g, cardLocation[i],humanCards[i] );
-        }
+        for (int i = 0; i < Math.min(13, state.piles[0].size()); i++) {drawCard(g, cardLocation[i], state.piles[0].cards.get(i));}
 
-        if (doubleTap==true){
-            //draw selected card in played human spot
-/*
-            //game.sendAction(new HeartsMoveAction(this));
-            drawCard(g, HcardPile, selectedCard);
-            p = new Paint();
-            p.setColor(Color.YELLOW);
-            RectF temp = yellowCardLocation[count];
-
-            g.drawRect(yellowCardLocation[count], p);
-
-            yellowCardLocation[count] = temp;
-            cardLocationBool[count] = true;
-
-            drawMe = true;
-            humanCards[count] = null;
-            */
-
-            //state.cardsOnTable[0] = selectedCard;
-
-        }
-
-        //idk what it does but it crashes without
-        if (count==14||count==12) {
-            p = new Paint();
-            p.setColor(Color.GREEN);
-            g.drawRect(yellowCardLocation[12], p);
-            drawCard(g, cardLocation[12],humanCards[12] );
-        }
-
-        // draws a green square over the played cards
-
-        for(int i=0; i<Math.min(13,state.piles[index].size());i++) {
-            if (cardLocationBool[i] == true) {
-                p = new Paint();
-                p.setColor(Color.GREEN);
-                g.drawRect(yellowCardLocation[i], p);
-            }
-        }
-
+        //update the displayed scores
         updateText();
     }
 
@@ -492,100 +442,41 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
                 player3Score.setText(HeartsHumanPlayer.super.allPlayerNames[3]+" score: " + currentScores[3]);
             }
         });
-
     }
+
+    public void drawDot(Canvas g, int currentPlayerIndex){
+        Paint white = new Paint();
+        white.setColor(Color.WHITE);
+        int x=0;
+        int y=0;
+
+        if (currentPlayerIndex==0){
+            x=700;
+            y=750;
+        }else if (currentPlayerIndex==1){
+            x=200;
+            y=550;
+        }else if (currentPlayerIndex==2){
+            x=700;
+            y=350;
+        }else if (currentPlayerIndex==3){
+            x=1100;
+            y=550;
+        }
+
+        g.drawCircle(x, y, 50, white);
+    }
+
 
     public void announceWinner(){
         AlertDialog.Builder builder = new AlertDialog.Builder(myActivity);
 
         builder.setTitle("Winner!");
-        //builder.setMessage(""+myActivity.winTrick()+"??? is the winner!");
+        //builder.setMessage(""+state.winTrick()+" is the winner!");
 
         AlertDialog alert = builder.create();
         alert.show();
 
-    }
-
-    /**
-     * @return
-     *        the rectangle that represents the location on the drawing
-     *        surface where the top card in the opponent's deck is to
-     *        be drawn
-     */
-    private RectF opponentTopCardLocation() {
-        // near the left-bottom of the drawing surface, based on the height
-        // and width, and the percentages defined above
-        int width = surface.getWidth();
-        int height = surface.getHeight();
-        return new RectF(LEFT_BORDER_PERCENT*width/100f,
-                (100-VERTICAL_BORDER_PERCENT-CARD_HEIGHT_PERCENT)*height/100f,
-                (LEFT_BORDER_PERCENT+CARD_WIDTH_PERCENT)*width/100f,
-                (100-VERTICAL_BORDER_PERCENT)*height/100f);
-    }
-
-    /**
-     * @return
-     *        the rectangle that represents the location on the drawing
-     *        surface where the top card in the current player's deck is to
-     *        be drawn
-     */
-    private RectF thisPlayerTopCardLocation() {
-        // near the right-bottom of the drawing surface, based on the height
-        // and width, and the percentages defined above
-        int width = surface.getWidth();
-        int height = surface.getHeight();
-        return new RectF((100-RIGHT_BORDER_PERCENT-CARD_WIDTH_PERCENT)*width/100f,
-                (100-VERTICAL_BORDER_PERCENT-CARD_HEIGHT_PERCENT)*height/100f,
-                (100-RIGHT_BORDER_PERCENT)*width/100f,
-                (100-VERTICAL_BORDER_PERCENT)*height/100f);
-    }
-
-    /**
-     * @return
-     *        the rectangle that represents the location on the drawing
-     *        surface where the top card in the middle pile is to
-     *        be drawn
-     */
-    private RectF middlePileTopCardLocation() {
-        // near the middle-bottom of the drawing surface, based on the height
-        // and width, and the percentages defined above
-        int height = surface.getHeight();
-        int width = surface.getWidth();
-        float rectLeft = (100-CARD_WIDTH_PERCENT+LEFT_BORDER_PERCENT-RIGHT_BORDER_PERCENT)*width/200;
-        float rectRight = rectLeft + width*CARD_WIDTH_PERCENT/100;
-        float rectTop = (100-VERTICAL_BORDER_PERCENT-CARD_HEIGHT_PERCENT)*height/100f;
-        float rectBottom = (100-VERTICAL_BORDER_PERCENT)*height/100f;
-        return new RectF(rectLeft, rectTop, rectRight, rectBottom);
-    }
-
-    /**
-     * draws a sequence of card-backs, each offset a bit from the previous one, so that all can be
-     * seen to some extent
-     *
-     * @param g
-     *        the canvas to draw on
-     * @param topRect
-     *        the rectangle that defines the location of the top card (and the size of all
-     *        the cards
-     * @param deltaX
-     *        the horizontal change between the drawing position of two consecutive cards
-     * @param deltaY
-     *        the vertical change between the drawing position of two consecutive cards
-     * @param numCards
-     *        the number of card-backs to draw
-     */
-    private void drawCardBacks(Canvas g, RectF topRect, float deltaX, float deltaY,
-                               int numCards) {
-        // loop through from back to front, drawing a card-back in each location
-        for (int i = numCards-1; i >= 0; i--) {
-            // determine theh position of this card's top/left corner
-            float left = topRect.left + i*deltaX;
-            float top = topRect.top + i*deltaY;
-            // draw a card-back (hence null) into the appropriate rectangle
-            drawCard(g,
-                    new RectF(left, top, left + topRect.width(), top + topRect.height()),
-                    null);
-        }
     }
 
     /**
@@ -603,47 +494,31 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
         x = (int) event.getX();
         y = (int) event.getY();
 
-        // determine whether the touch occurred on the top-card of either
-        // the player's pile or the middle pile
-        RectF myTopCardLoc = thisPlayerTopCardLocation();
-        RectF middleTopCardLoc = middlePileTopCardLocation();
-
         if(cardLocation != null){
             for (int n=0; n<=13; n++) {
                 if (cardLocation[n].contains(x, y)) {
                     dontFlash=true;
-                    selectedCard=humanCards[n];
-                    //if(isMyTurn) {
-
+                    selectedCard=state.piles[0].get(n);
                     if (singleTap == false) {
-                        selectedCard = humanCards[n];
+                        selectedCard = state.piles[0].get(n);
                         singleTap = true;
                         doubleTap = false;
                     } else if (cardToPlay == selectedCard) {
                         // call action
-                        Log.i(index+ " SEND PLAYCARDACTION ",  "currentplayer is" +state.CurrentPlayerIndex + ". I played "+cardToPlay+ "");
                         game.sendAction(new HeartsPlayCardAction(this, selectedCard));
-
                     } else {
                         singleTap = true;
-                        selectedCard = humanCards[n];
+                        selectedCard = state.piles[0].get(n);
                         doubleTap = false;
                     }
-
                     //moves selected card to table slot
-                    cardToPlay = humanCards[n];
-
-                    RectF touched = cardLocation[n];
+                    cardToPlay = state.piles[0].get(n);
                     count = n;
-
                 }
             }
         }
-
         if (dontFlash==false){ surface.flash(Color.RED, 50);}
     }
-
-
 
     /**
      * draws a card on the canvas; if the card is null, draw a card-back
