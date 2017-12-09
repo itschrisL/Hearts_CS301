@@ -88,6 +88,7 @@ public class EasyAI extends GameComputerPlayer {
 
             if(ind == state.CurrentPlayerIndex){
                 strategy();
+                sleep(2000);
                 Log.i(ind + " SEND PLAYCARDACTION  ", "currentplayer is" +state.CurrentPlayerIndex + ". I played "+chosenCard+"");
                 game.sendAction(new HeartsPlayCardAction(this, chosenCard));
                 //playCard(currentHand);

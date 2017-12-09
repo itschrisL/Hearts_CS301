@@ -39,37 +39,24 @@ public class Card implements Serializable {
      * get int value of rank
      * @return int - face value
      */
-    public int getRankIndex(){
-        switch (this.rank){
-            case ACE:
-                return 14;
-            case TWO:
-                return 2;
-            case THREE:
-                return 3;
-            case FOUR:
-                return 4;
-            case FIVE:
-                return 5;
-            case SIX:
-                return 6;
-            case SEVEN:
-                return 7;
-            case EIGHT:
-                return 8;
-            case NINE:
-                return 9;
-            case TEN:
-                return 10;
-            case JACK:
-                return 11;
-            case QUEEN:
-                return 12;
-            case KING:
-                return 13;
-        }
+    public int getRankIndex(Rank r){
+
+            if(r.equals(Rank.ACE)) return 14;
+		else if(r.equals(Rank.TWO)) return 2;
+		else if(r.equals(Rank.THREE)) return 3;
+		else if(r.equals(Rank.FOUR)) return 4;
+			else if(r.equals(Rank.FIVE)) return 5;
+			else if(r.equals(Rank.SIX)) return 6;
+			else if(r.equals(Rank.SEVEN)) return 7;
+			else if(r.equals(Rank.EIGHT)) return 8;
+			else if(r.equals(Rank.NINE)) return 9;
+			else if(r.equals(Rank.TEN)) return 10;
+			else if(r.equals(Rank.JACK)) return 11;
+			else if(r.equals(Rank.QUEEN)) return 12;
+			else if(r.equals(Rank.KING)) return 13;
+
         // else KING
-        return 13;
+        return 0;
     }
 
 	public int getSuitIndex(){

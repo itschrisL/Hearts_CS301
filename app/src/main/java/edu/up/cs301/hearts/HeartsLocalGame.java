@@ -27,12 +27,8 @@ public class HeartsLocalGame extends LocalGame {
      */
     public HeartsLocalGame() {
         super();
-
         // create the state for the beginning of the game
         currentGame = new HeartsGameState();
-        //currentGame.setPlayers(players);
-
-
     }
 
     /**
@@ -40,8 +36,8 @@ public class HeartsLocalGame extends LocalGame {
      * @return true if right suit
      */
     public Boolean validSuit(Card card, int playerIndex) {
-        if(startOfTrick){
-            currentGame.baseSuit=card.getSuit();
+        if(startOfTrick){ //first card played for the trick
+            currentGame.baseSuit=card.getSuit(); // set baseSuit for this trick
             return true;
         }
         //check if player has a card of the same suit as baseSuit
@@ -93,15 +89,15 @@ public class HeartsLocalGame extends LocalGame {
             currentGame.turn++;}
 
         //check if it's the end of a trick
-        int count =0;
+        int emptySpacesCount =0;
         for(int i =0; i<currentGame.cardsOnTable.length;i++){
             if(currentGame.cardsOnTable[i] ==null){
-                count++;
+                emptySpacesCount++;
             }
         }
 
         //if it's the end of a trick
-        if(count==0){
+        if(emptySpacesCount==0){
             //should set currentPlayer to the collector of cards of the trick
             updateScore();
             clearTable();
@@ -109,15 +105,18 @@ public class HeartsLocalGame extends LocalGame {
             //with respect to the first card played in that trick;
             startOfTrick = true;
         }
-        //if baseSuit is already set for that trick
-        if(count==1){
-            //baseSuit is already defined
-            startOfTrick=false;
-        }
         //rotate turns in clockwise order
         else{
             currentGame.NextTurn();
         }
+
+
+        //if baseSuit is already set for that trick
+        if(emptySpacesCount==2){
+            //baseSuit is already defined
+            startOfTrick=false;
+        }
+
 
 
         //if it's a humanPlayer, update the GUI by changing the doubleTap and singlTap variables.
@@ -161,13 +160,13 @@ public class HeartsLocalGame extends LocalGame {
     public int winTrick() {
         //find suit of first card played
         int winnerIndex=0;
-        int highestFace = currentGame.cardsOnTable[0].getRankIndex();
+        int highestFace = currentGame.cardsOnTable[0].getRankIndex(currentGame.cardsOnTable[0].getRank());
 
 
         //find highest card of suit played
         for (int i = 0; i < currentGame.cardsOnTable.length; i++) {
-            if (currentGame.cardsOnTable[i].getRankIndex() > highestFace) {
-                highestFace = currentGame.cardsOnTable[i].getRankIndex();
+            if (currentGame.cardsOnTable[i].getRankIndex(currentGame.cardsOnTable[i].getRank()) > highestFace) {
+                highestFace = currentGame.cardsOnTable[i].getRankIndex(currentGame.cardsOnTable[i].getRank());
                 winnerIndex=i;
                 //rank = currentGame.cardsOnTable[i].getRank();
             }
@@ -318,14 +317,11 @@ public class HeartsLocalGame extends LocalGame {
         int highestScore = currentGame.Scores[0];
         int lowestScore = currentGame.Scores[0];
         String tie = "";
-        int loser = 0;
-        int winner = 0;
 
         //check if the game is over
         for (int i = 0; i < currentGame.Scores.length; i++) {
             if (currentGame.Scores[i] > highestScore) {
                 highestScore = currentGame.Scores[i];
-                loser = i;
             }
         }
 
@@ -333,7 +329,6 @@ public class HeartsLocalGame extends LocalGame {
         for (int i = 0; i < currentGame.Scores.length; i++) {
             if (currentGame.Scores[i] < lowestScore) {
                 lowestScore = currentGame.Scores[i];
-                winner = i;
             }
         }
 
