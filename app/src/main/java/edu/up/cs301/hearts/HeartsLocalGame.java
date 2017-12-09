@@ -98,6 +98,8 @@ public class HeartsLocalGame extends LocalGame {
 
         //if it's the end of a trick
         if(emptySpacesCount==0){
+            //send to humanPlayer first to update GUI
+            sendUpdatedStateTo(players[0]);
             //should set currentPlayer to the collector of cards of the trick
             updateScore();
             clearTable();
@@ -112,7 +114,7 @@ public class HeartsLocalGame extends LocalGame {
 
 
         //if baseSuit is already set for that trick
-        if(emptySpacesCount==2){
+        if(emptySpacesCount==3){
             //baseSuit is already defined
             startOfTrick=false;
         }
@@ -171,6 +173,7 @@ public class HeartsLocalGame extends LocalGame {
                 //rank = currentGame.cardsOnTable[i].getRank();
             }
         }
+        startOfTrick = true;
         //set the winner of this trick to be the starting player for the next trick
         currentGame.setCurrentPlayer(winnerIndex);
 
